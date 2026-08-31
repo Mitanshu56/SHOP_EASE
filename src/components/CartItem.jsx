@@ -1,7 +1,11 @@
-import Button from './Button';
+import Button from "./Button";
 
-// item shape: { id, title, price, image, quantity }
-export default function CartItem({ item, onIncrement, onDecrement, onRemove }) {
+export default function CartItem({
+  item,
+  onIncrement,
+  onDecrement,
+  onRemove,
+}) {
   return (
     <div className="flex items-center gap-4 border-b border-gray-100 py-4 last:border-none">
       <img
@@ -11,21 +15,30 @@ export default function CartItem({ item, onIncrement, onDecrement, onRemove }) {
       />
 
       <div className="flex-1">
-        <h4 className="text-sm font-semibold text-gray-800">{item.title}</h4>
-        <p className="mt-1 text-sm text-gray-500">${item.price.toFixed(2)} each</p>
+        <h4 className="text-sm font-semibold text-gray-800">
+          {item.title}
+        </h4>
+
+        <p className="mt-1 text-sm text-gray-500">
+          ${item.price.toFixed(2)} each
+        </p>
 
         <div className="mt-2 flex items-center gap-2">
           <button
             type="button"
-            onClick={() => onDecrement?.(item)}
+            onClick={() => onDecrement(item)}
             className="h-7 w-7 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100"
           >
             −
           </button>
-          <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
+
+          <span className="w-8 text-center text-sm font-medium">
+            {item.quantity}
+          </span>
+
           <button
             type="button"
-            onClick={() => onIncrement?.(item)}
+            onClick={() => onIncrement(item)}
             className="h-7 w-7 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100"
           >
             +
@@ -37,7 +50,12 @@ export default function CartItem({ item, onIncrement, onDecrement, onRemove }) {
         <span className="text-sm font-bold text-gray-900">
           ${(item.price * item.quantity).toFixed(2)}
         </span>
-        <Button variant="ghost" className="px-2 py-1 text-xs" onClick={() => onRemove?.(item)}>
+
+        <Button
+          variant="ghost"
+          className="px-2 py-1 text-xs"
+          onClick={() => onRemove(item)}
+        >
           Remove
         </Button>
       </div>

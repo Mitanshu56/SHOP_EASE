@@ -1,8 +1,16 @@
-import ProductCard from './ProductCard';
+import ProductCard from "./ProductCard";
 
-export default function ProductGrid({ products, onAddToCart, onViewDetails }) {
+export default function ProductGrid({
+  products,
+  onAddToCart,
+  onViewDetails,
+}) {
   if (products.length === 0) {
-    return <p className="py-16 text-center text-gray-500">No products match your filters.</p>;
+    return (
+      <p className="py-16 text-center text-gray-500">
+        No products match your filters.
+      </p>
+    );
   }
 
   return (
