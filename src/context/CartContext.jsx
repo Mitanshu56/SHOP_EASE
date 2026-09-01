@@ -1,26 +1,25 @@
-import { createContext, useReducer } from "react";
-import {
-  cartReducer,
-  initialCartState,
-} from "./cartReducer";
+import { createContext, useEffect, useReducer } from "react";
+
+import { cartReducer, initialCartState } from "./cartReducer";
+
+import useLocalStorage from "../hooks/useLocalStorage";
 
 const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
-  const [cart, dispatch] = useReducer(
-    cartReducer,
-    initialCartState
-  );
+  const [savedCart] = useLocalStorage("cart", initialCartState);
 
-  const cartItemTotal = cart.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
+  const [cart, dispatch] = useReducer(cartReducer, savedCart);
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+
+  const cartItemTotal = cart.reduce((total, item) => total + item.quantity, 0);
 
   const cartItemAmount = cart.reduce(
-    (total, item) =>
-      total + item.price * item.quantity,
-    0
+    (total, item) => total + item.price * item.quantity,
+    0,
   );
 
   return (

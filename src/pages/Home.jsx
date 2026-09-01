@@ -2,40 +2,31 @@ import { useState } from "react";
 import ProductGrid from "../components/ProductGrid";
 import SearchFilterBar from "../components/SearchFilterBar";
 import { dummyProducts } from "../services/dummyProducts";
-
+import useDebounce from "../hooks/useDebounce";
 export default function Home() {
-
   const [search, setSearch] = useState("");
+
+  const debouncedSearch = useDebounce(search, 1000);
   const [category, setCategory] = useState("all");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
 
-
   const [sort, setSort] = useState("default");
 
   const searchedProducts = dummyProducts.filter((product) =>
-    product.title
-      .toLowerCase()
-      .includes(search.toLowerCase())
+    product.title.toLowerCase().includes(debouncedSearch.toLowerCase()),
   );
 
-
   const categoryProducts = searchedProducts.filter((product) =>
-    category === "all"
-      ? true
-      : product.category === category
+    category === "all" ? true : product.category === category,
   );
 
   const minPriceProducts = categoryProducts.filter((product) =>
-    minPrice === ""
-      ? true
-      : product.price >= Number(minPrice)
+    minPrice === "" ? true : product.price >= Number(minPrice),
   );
 
   const maxPriceProducts = minPriceProducts.filter((product) =>
-    maxPrice === ""
-      ? true
-      : product.price <= Number(maxPrice)
+    maxPrice === "" ? true : product.price <= Number(maxPrice),
   );
 
   const sortedProducts = [...maxPriceProducts].sort((a, b) => {
@@ -77,11 +68,7 @@ export default function Home() {
         setSort={setSort}
       />
 
-      
-
-    <ProductGrid
-  products={sortedProducts}
-/>
+      <ProductGrid products={sortedProducts} />
     </main>
   );
 }
