@@ -1,13 +1,40 @@
+import { useContext } from "react";
+import CartContext from "../context/CartContext";
 import Button from "./Button";
 
-export default function CartItem({
-  item,
-  onIncrement,
-  onDecrement,
-  onRemove,
-}) {
+export default function CartItem({ item }) {
+  const { dispatch } = useContext(CartContext);
+
+  const handleIncrement = () => {
+    dispatch({
+      type: "UPDATE_QUANTITY",
+      payload: {
+        productId: item.id,
+        quantity: item.quantity + 1,
+      },
+    });
+  };
+
+  const handleDecrement = () => {
+    dispatch({
+      type: "UPDATE_QUANTITY",
+      payload: {
+        productId: item.id,
+        quantity: item.quantity - 1,
+      },
+    });
+  };
+
+  const handleRemove = () => {
+    dispatch({
+      type: "REMOVE_ITEM",
+      payload: item.id,
+    });
+  };
+
   return (
     <div className="flex items-center gap-4 border-b border-gray-100 py-4 last:border-none">
+
       <img
         src={item.image}
         alt={item.title}
@@ -15,6 +42,7 @@ export default function CartItem({
       />
 
       <div className="flex-1">
+
         <h4 className="text-sm font-semibold text-gray-800">
           {item.title}
         </h4>
@@ -24,9 +52,10 @@ export default function CartItem({
         </p>
 
         <div className="mt-2 flex items-center gap-2">
+
           <button
             type="button"
-            onClick={() => onDecrement(item)}
+            onClick={handleDecrement}
             className="h-7 w-7 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100"
           >
             −
@@ -38,15 +67,17 @@ export default function CartItem({
 
           <button
             type="button"
-            onClick={() => onIncrement(item)}
+            onClick={handleIncrement}
             className="h-7 w-7 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100"
           >
             +
           </button>
+
         </div>
       </div>
 
       <div className="flex flex-col items-end gap-2">
+
         <span className="text-sm font-bold text-gray-900">
           ${(item.price * item.quantity).toFixed(2)}
         </span>
@@ -54,11 +85,13 @@ export default function CartItem({
         <Button
           variant="ghost"
           className="px-2 py-1 text-xs"
-          onClick={() => onRemove(item)}
+          onClick={handleRemove}
         >
           Remove
         </Button>
+
       </div>
+
     </div>
   );
 }

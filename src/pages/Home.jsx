@@ -3,7 +3,7 @@ import ProductGrid from "../components/ProductGrid";
 import SearchFilterBar from "../components/SearchFilterBar";
 import { dummyProducts } from "../services/dummyProducts";
 
-export default function Home({ addToCart }) {
+export default function Home() {
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
@@ -77,9 +77,10 @@ export default function Home({ addToCart }) {
         setSort={setSort}
       />
 
+      
+
     <ProductGrid
   products={sortedProducts}
-  onAddToCart={addToCart}
 />
     </main>
   );
