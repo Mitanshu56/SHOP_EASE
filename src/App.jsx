@@ -1,70 +1,36 @@
-import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
+
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
 import Home from "./pages/Home";
-import Cart from "./pages/Cart";
 import ProductDetail from "./pages/ProductDetail";
+import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import Orders from "./pages/Orders";
 
-export default function App() {
-  const [showCart, setShowCart] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState(null);
-  const [showCheckout, setShowCheckout] = useState(false);
-
-  const handleViewDetails = (product) => {
-    setShowCart(false);
-    setShowCheckout(false);
-    setSelectedProductId(product.id);
-  };
-
-  const handleCartClick = () => {
-    setSelectedProductId(null);
-    setShowCheckout(false);
-    setShowCart(true);
-  };
-
-  const handleCheckout = () => {
-    setShowCart(false);
-    setSelectedProductId(null);
-    setShowCheckout(true);
-  };
-
-  const handleBackToShop = () => {
-    setShowCart(false);
-    setShowCheckout(false);
-    setSelectedProductId(null);
-  };
-
+function App() {
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
+    <>
+      <Navbar />
 
-      <Navbar onCartClick={handleCartClick} />
+      <Routes>
+        <Route path="/" element={<Home />} />
 
-      <div className="flex-1">
+        <Route
+          path="/products/:id"
+          element={<ProductDetail />}
+        />
 
-        {showCheckout ? (
-          <Checkout onBackToShop={handleBackToShop} />
+        <Route path="/cart" element={<Cart />} />
 
-        ) : showCart ? (
-          <Cart
-            onBackToShop={handleBackToShop}
-            onProceedToCheckout={handleCheckout}
-          />
+        <Route
+          path="/checkout"
+          element={<Checkout />}
+        />
 
-        ) : selectedProductId ? (
-          <ProductDetail
-            productId={selectedProductId}
-            onBackToShop={handleBackToShop}
-          />
-
-        ) : (
-          <Home onViewDetails={handleViewDetails} />
-        )}
-
-      </div>
-
-      <Footer />
-
-    </div>
+        <Route path="/orders" element={<Orders />} />
+      </Routes>
+    </>
   );
 }
+
+export default App;

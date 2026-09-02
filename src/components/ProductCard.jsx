@@ -1,12 +1,12 @@
-import { useContext } from "react";
-import CartContext from "../context/CartContext";
 import Button from "./Button";
+import { useDispatch } from "react-redux";
+import { addItem } from "../store/cartSlice";
 
 export default function ProductCard({
   product,
   onViewDetails,
 }) {
-  const { dispatch } = useContext(CartContext);
+const dispatch = useDispatch();
 
   const {
     title,
@@ -17,10 +17,7 @@ export default function ProductCard({
   } = product;
 
   const handleAddToCart = () => {
-    dispatch({
-      type: "ADD_ITEM",
-      payload: product,
-    });
+      dispatch(addItem(product));
   };
 
   return (

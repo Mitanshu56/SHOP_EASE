@@ -1,45 +1,22 @@
-import { useContext } from "react";
-import CartContext from "../context/CartContext";
+
 import Button from "./Button";
 
-export default function CartItem({ item }) {
-  const { dispatch } = useContext(CartContext);
-
-  const handleIncrement = () => {
-    dispatch({
-      type: "UPDATE_QUANTITY",
-      payload: {
-        productId: item.id,
-        quantity: item.quantity + 1,
-      },
-    });
-  };
-
-  const handleDecrement = () => {
-    dispatch({
-      type: "UPDATE_QUANTITY",
-      payload: {
-        productId: item.id,
-        quantity: item.quantity - 1,
-      },
-    });
-  };
-
-  const handleRemove = () => {
-    dispatch({
-      type: "REMOVE_ITEM",
-      payload: item.id,
-    });
-  };
-
+export default function CartItem({
+  item,
+  onIncrement,
+  onDecrement,
+  onRemove,
+}) {
   return (
     <div className="flex items-center gap-4 border-b border-gray-100 py-4 last:border-none">
+
 
       <img
         src={item.image}
         alt={item.title}
         className="h-20 w-20 flex-shrink-0 rounded-lg border border-gray-100 object-contain p-2"
       />
+
 
       <div className="flex-1">
 
@@ -51,11 +28,12 @@ export default function CartItem({ item }) {
           ${item.price.toFixed(2)} each
         </p>
 
+
         <div className="mt-2 flex items-center gap-2">
 
           <button
             type="button"
-            onClick={handleDecrement}
+            onClick={() => onDecrement(item)}
             className="h-7 w-7 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100"
           >
             −
@@ -67,7 +45,7 @@ export default function CartItem({ item }) {
 
           <button
             type="button"
-            onClick={handleIncrement}
+            onClick={() => onIncrement(item)}
             className="h-7 w-7 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100"
           >
             +
@@ -75,6 +53,7 @@ export default function CartItem({ item }) {
 
         </div>
       </div>
+
 
       <div className="flex flex-col items-end gap-2">
 
@@ -85,7 +64,7 @@ export default function CartItem({ item }) {
         <Button
           variant="ghost"
           className="px-2 py-1 text-xs"
-          onClick={handleRemove}
+          onClick={() => onRemove(item)}
         >
           Remove
         </Button>

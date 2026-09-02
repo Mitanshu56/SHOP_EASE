@@ -1,18 +1,18 @@
-import { useContext } from "react";
+import { useSelector } from "react-redux";
 import CartIcon from "./CartIcon";
-import CartContext from "../context/CartContext";
 
 export default function Navbar({ onCartClick }) {
-  const { cartItemTotal } = useContext(CartContext);
+  const cart = useSelector((state) => state.cart);
 
+
+  const cartItemTotal = cart.reduce(
+  (total, item) => total + item.quantity,
+  0
+);
   return (
     <header className="sticky top-0 z-20 border-b border-gray-200 bg-white">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-
-        <a
-          href="#"
-          className="text-xl font-bold text-indigo-600"
-        >
+        <a href="#" className="text-xl font-bold text-indigo-600">
           ShopEase
         </a>
 
@@ -22,7 +22,7 @@ export default function Navbar({ onCartClick }) {
               Home
             </a>
           </li>
-
+    {/*not working now  */}
           <li>
             <a href="#" className="hover:text-indigo-600">
               My Orders
@@ -42,14 +42,9 @@ export default function Navbar({ onCartClick }) {
           </li>
         </ul>
 
-        <button
-          type="button"
-          aria-label="Cart"
-          onClick={onCartClick}
-        >
+        <button type="button" aria-label="Cart" onClick={onCartClick}>
           <CartIcon itemCount={cartItemTotal} />
         </button>
-
       </nav>
     </header>
   );

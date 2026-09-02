@@ -1,10 +1,33 @@
-import { useContext, useEffect, useRef, useState } from "react";
+
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 import Button from "../components/Button";
-import CartContext from "../context/CartContext";
 import OrderConfirmation from "../components/OrderConfirmation";
 
+import { clearCart } from "../store/cartSlice";
+import { placeOrder } from "../store/ordersSlice";
+
 export default function Checkout() {
-  const { cart, cartItemAmount, dispatch } = useContext(CartContext);
+  const dispatch = useDispatch();
+
+  // Redux cart
+  const cart = useSelector((state) => state.cart);
+
+  // Redux order state
+  const orderLoading = useSelector(
+    (state) => state.orders.loading
+  );
+
+  const orderError = useSelector(
+    (state) => state.orders.error
+  );
+
+  const cartItemAmount = cart.reduce(
+    (total, item) =>
+      total + item.price * item.quantity,
+    0
+  );
 
   const nameRef = useRef(null);
 
@@ -50,7 +73,9 @@ export default function Checkout() {
 
     if (!formData.email.trim()) {
       newErrors.email = "Email is required.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    } else if (
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+    ) {
       newErrors.email = "Enter a valid email address.";
     }
 
@@ -68,15 +93,20 @@ export default function Checkout() {
       newErrors.postalCode = "Postal code must be 6 digits.";
     }
 
+    const cleanedCardNumber =
+      formData.cardNumber.replace(/\s/g, "");
+
     if (!formData.cardNumber.trim()) {
       newErrors.cardNumber = "Card number is required.";
-    } else if (!/^\d{16}$/.test(formData.cardNumber.replace(/\s/g, ""))) {
+    } else if (!/^\d{16}$/.test(cleanedCardNumber)) {
       newErrors.cardNumber = "Card number must be 16 digits.";
     }
 
     if (!formData.expiry.trim()) {
       newErrors.expiry = "Expiry date is required.";
-    } else if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(formData.expiry)) {
+    } else if (
+      !/^(0[1-9]|1[0-2])\/\d{2}$/.test(formData.expiry)
+    ) {
       newErrors.expiry = "Use MM/YY format.";
     }
 
@@ -88,7 +118,8 @@ export default function Checkout() {
 
     return newErrors;
   };
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const validationErrors = validateForm();
@@ -99,18 +130,62 @@ export default function Checkout() {
       return;
     }
 
-    console.log("orderdetails",formData)
-    dispatch({
-      type: "CLEAR_CART",
-    });
+    const userId = "demo-user";
 
-    setOrderPlaced(true);
+    const orderItems = cart.map((item) => ({
+      productId: item.id,
+      title: item.title,
+      quantity: item.quantity,
+      price: item.price,
+    }));
+
+    const shipping = {
+      name: formData.name,
+      address: formData.address,
+      city: formData.city,
+      postalCode: formData.postalCode,
+    };
+
+    try {
+      const resultAction = await dispatch(
+        placeOrder({
+          userId,
+          items: orderItems,
+          total: cartItemAmount,
+          shipping,
+        })
+      );
+
+      if (placeOrder.fulfilled.match(resultAction)) {
+        console.log("Order placed successfully!", resultAction.payload);
+
+        // Clear Redux cart only after successful API request
+        dispatch(clearCart());
+
+        // Show confirmation modal
+        setOrderPlaced(true);
+      }
+    } catch (error) {
+      console.error("Unexpected order error:", error);
+    }
   };
+
   return (
     <main className="mx-auto max-w-5xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Checkout</h1>
+      <h1 className="mb-6 text-2xl font-bold text-gray-900">
+        Checkout
+      </h1>
+
+
+      {orderError && (
+        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+          {orderError}
+        </div>
+      )}
 
       <div className="grid gap-8 md:grid-cols-3">
+
+
         <form
           onSubmit={handleSubmit}
           className="flex flex-col gap-4 rounded-xl border border-gray-200 bg-white p-6 md:col-span-2"
@@ -119,10 +194,13 @@ export default function Checkout() {
             Shipping Details
           </h2>
 
+
           <div className="grid gap-4 sm:grid-cols-2">
+
             <div>
               <label className="flex flex-col gap-1 text-sm text-gray-600">
                 Full Name
+
                 <input
                   ref={nameRef}
                   type="text"
@@ -134,13 +212,16 @@ export default function Checkout() {
               </label>
 
               {errors.name && (
-                <p className="mt-1 text-sm text-red-500">{errors.name}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.name}
+                </p>
               )}
             </div>
 
             <div>
               <label className="flex flex-col gap-1 text-sm text-gray-600">
                 Email
+
                 <input
                   type="email"
                   name="email"
@@ -151,16 +232,19 @@ export default function Checkout() {
               </label>
 
               {errors.email && (
-                <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.email}
+                </p>
               )}
             </div>
           </div>
 
+
           <div>
             <label className="flex flex-col gap-1 text-sm text-gray-600">
               Address
+
               <input
-              required
                 type="text"
                 name="address"
                 value={formData.address}
@@ -170,14 +254,19 @@ export default function Checkout() {
             </label>
 
             {errors.address && (
-              <p className="mt-1 text-sm text-red-500">{errors.address}</p>
+              <p className="mt-1 text-sm text-red-500">
+                {errors.address}
+              </p>
             )}
           </div>
 
+
           <div className="grid gap-4 sm:grid-cols-2">
+
             <div>
               <label className="flex flex-col gap-1 text-sm text-gray-600">
                 City
+
                 <input
                   type="text"
                   name="city"
@@ -188,13 +277,16 @@ export default function Checkout() {
               </label>
 
               {errors.city && (
-                <p className="mt-1 text-sm text-red-500">{errors.city}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.city}
+                </p>
               )}
             </div>
 
             <div>
               <label className="flex flex-col gap-1 text-sm text-gray-600">
                 Postal Code
+
                 <input
                   type="text"
                   name="postalCode"
@@ -205,18 +297,23 @@ export default function Checkout() {
               </label>
 
               {errors.postalCode && (
-                <p className="mt-1 text-sm text-red-500">{errors.postalCode}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.postalCode}
+                </p>
               )}
             </div>
           </div>
+
 
           <h2 className="mt-2 text-lg font-semibold text-gray-800">
             Payment (Dummy)
           </h2>
 
+
           <div>
             <label className="flex flex-col gap-1 text-sm text-gray-600">
               Card Number
+
               <input
                 type="text"
                 name="cardNumber"
@@ -228,14 +325,19 @@ export default function Checkout() {
             </label>
 
             {errors.cardNumber && (
-              <p className="mt-1 text-sm text-red-500">{errors.cardNumber}</p>
+              <p className="mt-1 text-sm text-red-500">
+                {errors.cardNumber}
+              </p>
             )}
           </div>
 
+
           <div className="grid gap-4 sm:grid-cols-2">
+
             <div>
               <label className="flex flex-col gap-1 text-sm text-gray-600">
                 Expiry
+
                 <input
                   type="text"
                   name="expiry"
@@ -247,13 +349,16 @@ export default function Checkout() {
               </label>
 
               {errors.expiry && (
-                <p className="mt-1 text-sm text-red-500">{errors.expiry}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.expiry}
+                </p>
               )}
             </div>
 
             <div>
               <label className="flex flex-col gap-1 text-sm text-gray-600">
                 CVV
+
                 <input
                   type="text"
                   name="cvv"
@@ -265,25 +370,34 @@ export default function Checkout() {
               </label>
 
               {errors.cvv && (
-                <p className="mt-1 text-sm text-red-500">{errors.cvv}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.cvv}
+                </p>
               )}
             </div>
           </div>
+
 
           <Button
             type="submit"
             variant="primary"
             className="mt-4 self-start px-6 py-3"
+            disabled={orderLoading || cart.length === 0}
           >
-            Place Order
+            {orderLoading ? "Placing Order..." : "Place Order"}
           </Button>
         </form>
 
+
         <aside className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-6">
-          <h2 className="text-lg font-semibold text-gray-800">Order Summary</h2>
+          <h2 className="text-lg font-semibold text-gray-800">
+            Order Summary
+          </h2>
 
           {cart.length === 0 ? (
-            <p className="text-sm text-gray-500">Your cart is empty.</p>
+            <p className="text-sm text-gray-500">
+              Your cart is empty.
+            </p>
           ) : (
             cart.map((item) => (
               <div
@@ -294,7 +408,9 @@ export default function Checkout() {
                   {item.title} × {item.quantity}
                 </span>
 
-                <span>${(item.price * item.quantity).toFixed(2)}</span>
+                <span>
+                  ${(item.price * item.quantity).toFixed(2)}
+                </span>
               </div>
             ))
           )}
@@ -302,14 +418,20 @@ export default function Checkout() {
           <div className="mt-2 flex justify-between border-t border-gray-100 pt-3 text-base font-bold text-gray-900">
             <span>Total</span>
 
-            <span>${cartItemAmount.toFixed(2)}</span>
+            <span>
+              ${cartItemAmount.toFixed(2)}
+            </span>
           </div>
         </aside>
       </div>
 
+
       {orderPlaced && (
-        <OrderConfirmation onClose={() => setOrderPlaced(false)} />
+        <OrderConfirmation
+          onClose={() => setOrderPlaced(false)}
+        />
       )}
     </main>
   );
 }
+

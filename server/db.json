@@ -1,4 +1,101 @@
 {
   "users": [],
-  "orders": []
+  "orders": [
+    {
+      "id": "3708ac8c-ca01-47b7-b9de-ba9ae19d2596",
+      "userId": "demo-user",
+      "items": [
+        {
+          "productId": 1,
+          "title": "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
+          "quantity": 1,
+          "price": 109.95
+        }
+      ],
+      "total": 109.95,
+      "shipping": {
+        "name": "Mitanshu Sailor",
+        "address": "surat",
+        "city": "surat",
+        "postalCode": "395005"
+      },
+      "status": "Processing",
+      "date": "2026-09-02T08:12:28.591Z"
+    },
+    {
+      "id": "a86b066f-bd16-42ce-a866-a886c6e88d95",
+      "userId": "demo-user",
+      "items": [
+        {
+          "productId": 1,
+          "title": "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
+          "quantity": 1,
+          "price": 109.95
+        },
+        {
+          "productId": 2,
+          "title": "Mens Casual Premium Slim Fit T-Shirts ",
+          "quantity": 1,
+          "price": 22.3
+        }
+      ],
+      "total": 132.25,
+      "shipping": {
+        "name": "Mitanshu Sailor",
+        "address": "surat",
+        "city": "surat",
+        "postalCode": "395005"
+      },
+      "status": "Processing",
+      "date": "2026-09-02T08:25:54.367Z"
+    },
+    {
+      "id": "4746ec66-aeda-4486-8d5b-73ee39392129",
+      "userId": "demo-user",
+      "items": [
+        {
+          "productId": 11,
+          "title": "Silicon Power 256GB SSD 3D NAND A55 SLC Cache Performance Boost SATA III 2.5",
+          "quantity": 1,
+          "price": 109
+        }
+      ],
+      "total": 109,
+      "shipping": {
+        "name": "Mitanshu Sailor",
+        "address": "surat",
+        "city": "Saskatoon",
+        "postalCode": "395005"
+      },
+      "status": "Processing",
+      "date": "2026-09-02T09:24:50.653Z"
+    },
+    {
+      "id": "12b42a23-422c-462a-83d4-636141929c2e",
+      "userId": "demo-user",
+      "items": [
+        {
+          "productId": 1,
+          "title": "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
+          "quantity": 1,
+          "price": 109.95
+        },
+        {
+          "productId": 2,
+          "title": "Mens Casual Premium Slim Fit T-Shirts ",
+          "quantity": 1,
+          "price": 22.3
+        }
+      ],
+      "total": 132.25,
+      "shipping": {
+        "name": "Mitanshu Sailor",
+        "address": "surat",
+        "city": "surat",
+        "postalCode": "395005"
+      },
+      "status": "Processing",
+      "date": "2026-09-02T09:30:20.108Z"
+    }
+  ]
 }

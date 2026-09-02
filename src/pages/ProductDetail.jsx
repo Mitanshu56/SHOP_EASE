@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import Button from "../components/Button";
 import { getProductById } from "../services/products";
-import { useContext } from "react";
-import CartContext from "../context/CartContext";
+import { addItem } from "../store/cartSlice";
+import { useDispatch} from "react-redux";
 
 export default function ProductDetail({
   productId,
   onBackToShop,
 }) {
+  const dispatch = useDispatch();
 
-    const { dispatch } = useContext(CartContext);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -75,10 +75,7 @@ export default function ProductDetail({
 
 
   const handleAddToCart = () => {
-    dispatch({
-      type: "ADD_ITEM",
-      payload: product,
-    });
+ dispatch(addItem(product));
   };
 
   return (
