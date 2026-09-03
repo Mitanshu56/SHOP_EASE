@@ -5,6 +5,7 @@ import { getProducts } from "../services/products";
 import useDebounce from "../hooks/useDebounce";
 
 export default function Home({ onViewDetails }) {
+  const [count, setCount] = useState(0);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [minPrice, setMinPrice] = useState("");
@@ -92,11 +93,17 @@ export default function Home({ onViewDetails }) {
     );
   }
 
+
+  //throw new Error("Testing ErrorBoundary");
   return (
     <main className="mx-auto max-w-6xl px-4 py-8">
       <h1 className="mb-6 text-2xl font-bold text-gray-900">
         Shop the Catalog
       </h1>
+
+        <button onClick={() => setCount(count + 1)}>
+        Parent render: {count}
+      </button>
 
       <SearchFilterBar
         search={search}

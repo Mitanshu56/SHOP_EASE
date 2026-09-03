@@ -1,7 +1,7 @@
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-const API_URL = "http://localhost:4000/orders";
+const API_URL = `${import.meta.env.VITE_API_URL}/orders`;
 
 // Place a new order
 export const placeOrder = createAsyncThunk(

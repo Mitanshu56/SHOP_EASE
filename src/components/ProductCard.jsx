@@ -2,8 +2,11 @@ import Button from "./Button";
 import { useDispatch } from "react-redux";
 import { addItem } from "../store/cartSlice";
 import { useNavigate } from "react-router-dom";
+import React, { useRef } from "react";
 
-export default function ProductCard({ product }) {
+function ProductCard({ product }) {
+  const i=useRef(0);
+  console.log("ProductCard rendered:",i.current+1);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -11,13 +14,7 @@ export default function ProductCard({ product }) {
     navigate(`/products/${product.id}`);
   };
 
-  const {
-    title,
-    price,
-    category,
-    image,
-    rating,
-  } = product;
+  const { title, price, category, image, rating } = product;
 
   const handleAddToCart = () => {
     dispatch(addItem(product));
@@ -25,7 +22,6 @@ export default function ProductCard({ product }) {
 
   return (
     <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
-
       <button
         type="button"
         onClick={handleViewDetails}
@@ -39,7 +35,6 @@ export default function ProductCard({ product }) {
       </button>
 
       <div className="flex flex-1 flex-col gap-2 p-4">
-
         <span className="text-xs font-medium uppercase tracking-wide text-indigo-500">
           {category}
         </span>
@@ -51,17 +46,12 @@ export default function ProductCard({ product }) {
         <div className="flex items-center gap-1 text-xs text-gray-500">
           <span className="text-amber-500">★</span>
 
-          <span>
-            {rating?.rate ?? "—"}
-          </span>
+          <span>{rating?.rate ?? "—"}</span>
 
-          <span className="text-gray-400">
-            ({rating?.count ?? 0})
-          </span>
+          <span className="text-gray-400">({rating?.count ?? 0})</span>
         </div>
 
         <div className="mt-auto flex items-center justify-between pt-2">
-
           <span className="text-lg font-bold text-gray-900">
             ${price.toFixed(2)}
           </span>
@@ -73,10 +63,9 @@ export default function ProductCard({ product }) {
           >
             Add to Cart
           </Button>
-
         </div>
-
       </div>
     </div>
   );
 }
+export default React.memo(ProductCard);
