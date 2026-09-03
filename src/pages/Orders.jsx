@@ -1,7 +1,8 @@
 
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
+import { useContext } from "react";
+import AuthContext from "../context/AuthContext";
 import { fetchOrders } from "../store/ordersSlice";
 
 const STATUS_STYLES = {
@@ -11,7 +12,7 @@ const STATUS_STYLES = {
 
 export default function Orders() {
   const dispatch = useDispatch();
-
+const { user } = useContext(AuthContext);
   const {
     orders,
     loading,
@@ -19,10 +20,10 @@ export default function Orders() {
   } = useSelector((state) => state.orders);
 
 
-  const userId = "demo-user";
+
 
   useEffect(() => {
-    dispatch(fetchOrders(userId));
+dispatch(fetchOrders(user.id));
   }, [dispatch]);
 
   if (loading) {
@@ -44,7 +45,7 @@ export default function Orders() {
 
         <button
           type="button"
-          onClick={() => dispatch(fetchOrders(userId))}
+          onClick={() => dispatch(fetchOrders(user.id))}
           className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
         >
           Retry
@@ -72,7 +73,7 @@ export default function Orders() {
               key={order.id}
               className="rounded-xl border border-gray-200 bg-white p-4"
             >
-              {/* Order Header */}
+
               <div className="flex items-center justify-between">
                 <span className="font-semibold text-gray-800">
                   {order.id}
@@ -88,13 +89,13 @@ export default function Orders() {
                 </span>
               </div>
 
-              {/* Date */}
+
               <p className="mt-1 text-sm text-gray-500">
                 Placed on{" "}
                 {new Date(order.date).toLocaleDateString()}
               </p>
 
-              {/* Items */}
+
               <div className="mt-3 flex flex-col gap-1 border-t border-gray-100 pt-3">
                 {order.items.map((item, index) => (
                   <div
@@ -112,7 +113,7 @@ export default function Orders() {
                 ))}
               </div>
 
-              {/* Total */}
+
               <div className="mt-3 flex justify-end border-t border-gray-100 pt-3 text-sm font-bold text-gray-900">
                 Total: ${order.total.toFixed(2)}
               </div>

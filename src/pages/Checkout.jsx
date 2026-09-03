@@ -7,10 +7,13 @@ import OrderConfirmation from "../components/OrderConfirmation";
 
 import { clearCart } from "../store/cartSlice";
 import { placeOrder } from "../store/ordersSlice";
+import { useContext } from "react";
+import AuthContext from "../context/AuthContext";
 
 export default function Checkout() {
   const dispatch = useDispatch();
 
+  const { user } = useContext(AuthContext);
   // Redux cart
   const cart = useSelector((state) => state.cart);
 
@@ -130,8 +133,6 @@ export default function Checkout() {
       return;
     }
 
-    const userId = "demo-user";
-
     const orderItems = cart.map((item) => ({
       productId: item.id,
       title: item.title,
@@ -149,7 +150,7 @@ export default function Checkout() {
     try {
       const resultAction = await dispatch(
         placeOrder({
-          userId,
+          userId:user.id,
           items: orderItems,
           total: cartItemAmount,
           shipping,

@@ -1,12 +1,15 @@
 import Button from "./Button";
 import { useDispatch } from "react-redux";
 import { addItem } from "../store/cartSlice";
+import { useNavigate } from "react-router-dom";
 
-export default function ProductCard({
-  product,
-  onViewDetails,
-}) {
-const dispatch = useDispatch();
+export default function ProductCard({ product }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleViewDetails = () => {
+    navigate(`/products/${product.id}`);
+  };
 
   const {
     title,
@@ -17,7 +20,7 @@ const dispatch = useDispatch();
   } = product;
 
   const handleAddToCart = () => {
-      dispatch(addItem(product));
+    dispatch(addItem(product));
   };
 
   return (
@@ -25,7 +28,7 @@ const dispatch = useDispatch();
 
       <button
         type="button"
-        onClick={() => onViewDetails?.(product)}
+        onClick={handleViewDetails}
         className="block aspect-square w-full overflow-hidden bg-gray-50"
       >
         <img
@@ -47,7 +50,11 @@ const dispatch = useDispatch();
 
         <div className="flex items-center gap-1 text-xs text-gray-500">
           <span className="text-amber-500">★</span>
-          <span>{rating?.rate ?? "—"}</span>
+
+          <span>
+            {rating?.rate ?? "—"}
+          </span>
+
           <span className="text-gray-400">
             ({rating?.count ?? 0})
           </span>

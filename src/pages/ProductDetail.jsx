@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
 import Button from "../components/Button";
 import { getProductById } from "../services/products";
 import { addItem } from "../store/cartSlice";
-import { useDispatch} from "react-redux";
 
-export default function ProductDetail({
-  productId,
-  onBackToShop,
-}) {
+export default function ProductDetail() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -19,7 +20,7 @@ export default function ProductDetail({
       setLoading(true);
       setError(null);
 
-      const data = await getProductById(productId);
+      const data = await getProductById(id);
 
       setProduct(data);
     } catch (error) {
@@ -31,7 +32,7 @@ export default function ProductDetail({
 
   useEffect(() => {
     fetchProduct();
-  }, [productId]);
+  }, [id]);
 
   if (loading) {
     return (
@@ -46,13 +47,11 @@ export default function ProductDetail({
   if (error) {
     return (
       <main className="mx-auto max-w-5xl px-4 py-16 text-center">
-
         <p className="mb-4 text-red-500">
           {error}
         </p>
 
         <div className="flex justify-center gap-3">
-
           <Button
             variant="primary"
             onClick={fetchProduct}
@@ -62,40 +61,30 @@ export default function ProductDetail({
 
           <Button
             variant="secondary"
-            onClick={onBackToShop}
+            onClick={() => navigate("/")}
           >
             Back to Catalog
           </Button>
-
         </div>
-
       </main>
     );
   }
 
-
   const handleAddToCart = () => {
- dispatch(addItem(product));
+    dispatch(addItem(product));
   };
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-8">
-
       <div className="grid gap-8 md:grid-cols-2">
 
-
-
         <div className="flex aspect-square items-center justify-center rounded-xl border border-gray-200 bg-gray-50 p-10">
-
           <img
             src={product.image}
             alt={product.title}
             className="h-full w-full object-contain"
           />
-
         </div>
-
-
 
         <div className="flex flex-col gap-4">
 
@@ -107,10 +96,7 @@ export default function ProductDetail({
             {product.title}
           </h1>
 
-
-
           <div className="flex items-center gap-1 text-sm text-gray-500">
-
             <span className="text-amber-500">
               ★
             </span>
@@ -122,26 +108,20 @@ export default function ProductDetail({
             <span className="text-gray-400">
               ({product.rating?.count ?? 0} reviews)
             </span>
-
           </div>
-
-
 
           <p className="text-3xl font-bold text-gray-900">
             ${product.price.toFixed(2)}
           </p>
 
-
-
           <p className="text-sm leading-relaxed text-gray-600">
             {product.description}
           </p>
 
-
-
           <div className="mt-4 flex gap-3">
 
-            <Button onClick={handleAddToCart}
+            <Button
+              onClick={handleAddToCart}
               variant="primary"
               className="px-6 py-3"
             >
@@ -151,7 +131,7 @@ export default function ProductDetail({
             <Button
               variant="secondary"
               className="px-6 py-3"
-              onClick={onBackToShop}
+              onClick={() => navigate("/")}
             >
               Back to Catalog
             </Button>
@@ -159,9 +139,7 @@ export default function ProductDetail({
           </div>
 
         </div>
-
       </div>
-
     </main>
   );
 }

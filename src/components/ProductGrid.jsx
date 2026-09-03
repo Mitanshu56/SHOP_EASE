@@ -1,9 +1,6 @@
 import ProductCard from "./ProductCard";
 
-export default function ProductGrid({
-  products,
-  onViewDetails,
-}) {
+export default function ProductGrid({ products }) {
   if (products.length === 0) {
     return (
       <p className="py-16 text-center text-gray-500">
@@ -18,7 +15,6 @@ export default function ProductGrid({
         <ProductCard
           key={product.id}
           product={product}
-          onViewDetails={onViewDetails}
         />
       ))}
     </div>
